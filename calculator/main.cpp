@@ -3,16 +3,16 @@
 #include <algorithm>
 #include <string>
 #include <cstdlib>
-#include <cctype> // Добавлен заголовочный файл для isdigit()
+#include <cctype>
 
 void printUsage() {
     std::cout << "Статистический калькулятор\n"
-              << "Поддерживаемые операции: \n"
+              << "Поддерживаемые операции:\n"
               << "-o summa (среднее арифметическое)\n"
               << "-o median (медиана)\n"
               << "Количество операндов: от 5 до 7\n"
               << "Пример:\n"
-              << "./calculator -o summa 45 13 -2 10 5\n";
+              << "./main -o summa 45 13 -2 10 5 \n";
 }
 
 double calculateMean(const std::vector<int>& numbers) {
@@ -34,7 +34,7 @@ double calculateMedian(std::vector<int>& numbers) {
 }
 
 int main(int argc, char* argv[]) {
-    if (argc < 7 || argc > 9) { // Проверка на количество аргументов
+    if (argc < 8 || argc > 10) { // Проверка на количество аргументов
         printUsage();
         return 1;
     }
@@ -44,7 +44,7 @@ int main(int argc, char* argv[]) {
 
     // Обработка параметров командной строки
     for (int i = 1; i < argc; ++i) {
-        if (std::string(argv[i]) == "-o" || std::string(argv[i]) == "--operation") {
+        if (std::string(argv[i]) == "-o") {
             if (i + 1 < argc) {
                 operation = argv[++i];
             } else {
@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
             }
         } else {
             // Проверка на цифры
-            if (std::isdigit(argv[i][0])) {
+            if (std::isdigit(argv[i][0]) || (argv[i][0] == '-' && std::isdigit(argv[i][1]))) {
                 numbers.push_back(std::atoi(argv[i]));
             } else {
                 std::cerr << "Ошибка: можно вводить только цифры.\n"; 
@@ -62,15 +62,15 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    if (numbers.size() < 5 || numbers.size() > 7) {
+    if (numbers.size() < 5 || numbers.size() > 7) { // Исправлено на от 5 до 7
         printUsage();
         return 1;
     }
 
     if (operation == "summa") {
-        std::cout << "Среднее арифметическое: " << calculateMean(numbers) << "\n";
+        std::cout << "Среднее арифметическое: " << calculateMean(numbers) << "\n" ;
     } else if (operation == "median") {
-        std::cout << "Медиана: " << calculateMedian(numbers) << "\n";
+        std::cout << "Медиана: " << calculateMedian(numbers) << "\n" ;
     } else {
         printUsage();
         return 1;
